@@ -8,11 +8,8 @@ export const resolvers: IResolvers = {
       _root: undefined,
       _args: Record<string, unknown>,
       { db }: { db: Database }
-    ): Promise<{
-      (): Promise<Listing[]>;
-      (callback: MongoCallback<Listing[]>): void;
-    }> => {
-      return db.listings.find({}).toArray;
+    ): Promise<Listing[]> => {
+      return await db.listings.find({}).toArray();
     },
   },
 
@@ -32,5 +29,8 @@ export const resolvers: IResolvers = {
 
       return deletionAttempResult.value;
     },
+  },
+  Listing: {
+    id: (listing: Listing): string => listing._id.toString(),
   },
 };
