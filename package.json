@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc -p ./",
     "start": "nodemon src/index.ts",
-    "seed": "ts-node temp/seed.ts"
+    "seed": "ts-node src/temp/seed.ts"
   },
   "keywords": [],
   "repository": {
