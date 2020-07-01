@@ -1,8 +1,5 @@
 import React, { FC } from "react";
 
-// Api
-import { server } from "../../lib/api";
-
 // Types
 import {
   ListingsData,
@@ -11,7 +8,7 @@ import {
 } from "./types";
 
 // Custom Hooks
-import { useQuery } from "../../lib/hooks";
+import { useQuery, useMutation } from "../../lib/hooks";
 
 const LISTINGS = `
   query Listings {
@@ -44,7 +41,17 @@ interface ListingsProps {
 export const Listings: FC<ListingsProps> = ({
   title,
 }: ListingsProps): JSX.Element => {
+  // Hooks
   const { data, refetch, loading, hasError } = useQuery<ListingsData>(LISTINGS);
+  const [
+    deleteListing,
+    { loading: deleteListingLoading, hasError: deleteListingHasError },
+  ] = useMutation<DeleteListingData, DeleteListingVariables>(DELETE_LISTING);
+
+  const handleDeleteListing = async (id: string) => {
+    await deleteListing({ id });
+    refetch();
+  };
 
   // Helpers
   const listings = data ? data.listings : null;
@@ -53,27 +60,25 @@ export const Listings: FC<ListingsProps> = ({
     return (
       <li key={listing.id}>
         {listing.title}
-        <button onClick={() => deleteListing(listing.id)}>Delete</button>
+        <button onClick={() => handleDeleteListing(listing.id)}>Delete</button>
       </li>
     );
   });
 
-  const deleteListing = async (id: string) => {
-    await server.fetch<DeleteListingData, DeleteListingVariables>({
-      query: DELETE_LISTING,
-      variables: {
-        id,
-      },
-    });
-
-    refetch();
-  };
-
   return (
     <div>
       <h2>{title}</h2>
-      {hasError && "Something went wrong. Please try again latter"}
-      {!hasError && loading ? <h2>Loading...</h2> : <ul>{listOfListings}</ul>}
+
+      {hasError ||
+        deleteListingLoading ||
+        (deleteListingHasError &&
+          "Something went wrong. Please try again latter")}
+
+      {!hasError && !deleteListingHasError && loading ? (
+        <h2>Loading...</h2>
+      ) : (
+        <ul>{listOfListings}</ul>
+      )}
     </div>
   );
 };
