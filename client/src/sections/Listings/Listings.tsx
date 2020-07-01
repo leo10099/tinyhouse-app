@@ -44,7 +44,7 @@ interface ListingsProps {
 export const Listings: FC<ListingsProps> = ({
   title,
 }: ListingsProps): JSX.Element => {
-  const { data, refetch } = useQuery<ListingsData>(LISTINGS);
+  const { data, refetch, loading, hasError } = useQuery<ListingsData>(LISTINGS);
 
   // Helpers
   const listings = data ? data.listings : null;
@@ -72,7 +72,8 @@ export const Listings: FC<ListingsProps> = ({
   return (
     <div>
       <h2>{title}</h2>
-      <ul>{listOfListings}</ul>
+      {hasError && "Something went wrong. Please try again latter"}
+      {!hasError && loading ? <h2>Loading...</h2> : <ul>{listOfListings}</ul>}
     </div>
   );
 };

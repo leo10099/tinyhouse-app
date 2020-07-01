@@ -3,15 +3,30 @@ import { server } from "../api/server";
 
 interface State<TData> {
   data: TData | null;
+  loading: boolean;
+  hasError: boolean;
 }
 
 export const useQuery = <TData = any>(query: string) => {
-  const [state, setState] = useState<State<TData>>({ data: null });
+  const [state, setState] = useState<State<TData>>({
+    data: null,
+    loading: true,
+    hasError: false,
+  });
 
   const fetch = useCallback(() => {
     const fetchApi = async () => {
-      const { data } = await server.fetch<TData>({ query });
-      setState({ data });
+      try {
+        setState({ data: null, loading: true, hasError: false });
+        const { data, errors } = await server.fetch<TData>({ query });
+        if (errors?.length) {
+          throw new Error(errors[0].message);
+        }
+        setState({ data, loading: false, hasError: false });
+      } catch (e) {
+        setState({ data: null, loading: false, hasError: true });
+        throw console.error(e);
+      }
     };
 
     fetchApi();
