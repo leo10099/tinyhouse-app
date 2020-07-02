@@ -1,4 +1,5 @@
 import React, { FC } from "react";
+import { gql } from "apollo-boost";
 
 // Types
 import {
@@ -8,9 +9,9 @@ import {
 } from "./types";
 
 // Custom Hooks
-import { useQuery, useMutation } from "../../lib/hooks";
+import { useQuery, useMutation } from "react-apollo";
 
-const LISTINGS = `
+const LISTINGS = gql`
   query Listings {
     listings {
       id
@@ -26,9 +27,9 @@ const LISTINGS = `
   }
 `;
 
-const DELETE_LISTING = `
-  mutation DeleteListing($id: ID!){
-    deleteListing (id: $id) {
+const DELETE_LISTING = gql`
+  mutation DeleteListing($id: ID!) {
+    deleteListing(id: $id) {
       id
     }
   }
@@ -42,14 +43,18 @@ export const Listings: FC<ListingsProps> = ({
   title,
 }: ListingsProps): JSX.Element => {
   // Hooks
-  const { data, refetch, loading, hasError } = useQuery<ListingsData>(LISTINGS);
+  const { data, refetch, loading, error } = useQuery<ListingsData>(LISTINGS);
   const [
     deleteListing,
-    { loading: deleteListingLoading, hasError: deleteListingHasError },
+    { loading: deleteListingLoading, error: deleteListingHasError },
   ] = useMutation<DeleteListingData, DeleteListingVariables>(DELETE_LISTING);
 
   const handleDeleteListing = async (id: string) => {
-    await deleteListing({ id });
+    await deleteListing({
+      variables: {
+        id,
+      },
+    });
     refetch();
   };
 
@@ -69,12 +74,12 @@ export const Listings: FC<ListingsProps> = ({
     <div>
       <h2>{title}</h2>
 
-      {hasError ||
+      {error ||
         deleteListingLoading ||
         (deleteListingHasError &&
           "Something went wrong. Please try again latter")}
 
-      {!hasError && !deleteListingHasError && loading ? (
+      {!error && !deleteListingHasError && loading ? (
         <h2>Loading...</h2>
       ) : (
         <ul>{listOfListings}</ul>
