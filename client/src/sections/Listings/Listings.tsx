@@ -1,6 +1,10 @@
 import React, { FC } from "react";
 import { gql } from "apollo-boost";
 
+// Components
+import { Avatar, Button, Divider, List, Spin } from "antd";
+import { ListingsSkeleton } from "./components";
+
 // Types
 import {
   DeleteListing as DeleteListingData,
@@ -10,6 +14,9 @@ import { Listings as ListingsData } from "./__generated__/Listings";
 
 // Custom Hooks
 import { useQuery, useMutation } from "react-apollo";
+
+// Styles
+import "./styles/Listings.css";
 
 const LISTINGS = gql`
   query Listings {
@@ -61,17 +68,33 @@ export const Listings: FC<ListingsProps> = ({
   // Helpers
   const listings = data ? data.listings : null;
 
-  const listOfListings = listings?.map((listing) => {
-    return (
-      <li key={listing.id}>
-        {listing.title}
-        <button onClick={() => handleDeleteListing(listing.id)}>Delete</button>
-      </li>
-    );
-  });
+  const listOfListings = listings ? (
+    <List
+      itemLayout="horizontal"
+      dataSource={listings}
+      renderItem={(listing) => (
+        <List.Item
+          actions={[
+            <Button
+              onClick={() => handleDeleteListing(listing.id)}
+              type="primary"
+            >
+              Delete
+            </Button>,
+          ]}
+        >
+          <List.Item.Meta
+            title={listing.title}
+            description={listing.address}
+            avatar={<Avatar src={listing.image} shape="square" size={48} />}
+          ></List.Item.Meta>
+        </List.Item>
+      )}
+    />
+  ) : null;
 
   return (
-    <div>
+    <div className="listings">
       <h2>{title}</h2>
 
       {error ||
@@ -79,8 +102,19 @@ export const Listings: FC<ListingsProps> = ({
         (deleteListingHasError &&
           "Something went wrong. Please try again latter")}
 
-      {!error && !deleteListingHasError && loading ? (
-        <h2>Loading...</h2>
+      {!error && !deleteListingHasError && deleteListingLoading && (
+        <Spin spinning={deleteListingLoading} />
+      )}
+
+      {!error && loading ? (
+        <div className="listings">
+          <ListingsSkeleton active paragraph={{ rows: 1 }} />
+          <Divider></Divider>
+          <ListingsSkeleton active paragraph={{ rows: 1 }} />
+          <Divider></Divider>
+          <ListingsSkeleton active paragraph={{ rows: 1 }} />
+          <Divider></Divider>
+        </div>
       ) : (
         <ul>{listOfListings}</ul>
       )}
