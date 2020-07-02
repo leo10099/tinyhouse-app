@@ -3,10 +3,10 @@ import { gql } from "apollo-boost";
 
 // Types
 import {
-  ListingsData,
-  DeleteListingData,
+  DeleteListing as DeleteListingData,
   DeleteListingVariables,
-} from "./types";
+} from "./__generated__/DeleteListing";
+import { Listings as ListingsData } from "./__generated__/Listings";
 
 // Custom Hooks
 import { useQuery, useMutation } from "react-apollo";
