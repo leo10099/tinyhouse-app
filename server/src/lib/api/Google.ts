@@ -8,7 +8,7 @@ const auth = new google.auth.OAuth2(
 
 export const Google = {
   authUrl: auth.generateAuthUrl({
-    access_type: "online",
+    access_type: "offline",
     scope: [
       "https://www.googleapis.com/auth/userinfo.email",
       "https://www.googleapis.com/auth/userinfo.profile",

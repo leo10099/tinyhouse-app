@@ -3,6 +3,7 @@ import { Google } from "../../../lib/api";
 import { Database, Viewer, User } from "../../../lib/types";
 import { LogInArgs } from "./types";
 import crypto from "crypto";
+import { Console } from "console";
 
 const logInViaGoogle = async (
   code: string,
@@ -16,17 +17,16 @@ const logInViaGoogle = async (
     throw new Error("Google log-in error");
   }
   // Name/Photo/Email lists
-  const userNameList = user.names?.lenght ? user.names : null;
+  const userNameList = user.names?.length ? user.names : null;
   const userPhotoList = user.photos?.length ? user.photos : null;
-  const userEmailList = user.emailAddreses?.length ? user.emailAddresses : null;
+  const userEmailList = user.emailAddresses?.length
+    ? user.emailAddresses
+    : null;
 
   // User display name
   const userName = userNameList ? userNameList[0].displayName : null;
   // User ID
-  const userId =
-    userNameList && userNameList[0] && userNameList?.metadata?.source
-      ? userNameList[0].metadata.source.id
-      : null;
+  const userId = (userNameList && userNameList[0].metadata?.source?.id) || null;
   // User avatar
   const userAvatar =
     userPhotoList && userPhotoList[0].url ? userPhotoList[0].url : null;
