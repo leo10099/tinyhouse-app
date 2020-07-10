@@ -4,7 +4,7 @@ import googleLogo from "./assets/google_logo.jpg";
 import { Viewer } from "../../lib/types";
 import { useApolloClient, useMutation } from "react-apollo";
 import { AUTH_URL } from "../../lib/graphql/queries";
-import { AuthUrl as AuhtUrlData } from "../../lib/graphql/queries/AuthUrl/__generated__/AuthUrl";
+
 import {
   LogIn as LoginData,
   LogInVariables,
@@ -31,8 +31,9 @@ export const LogIn: React.FC<Props> = ({ setViewer }: Props) => {
     { data: logInData, loading: logInLoading, error: logInError },
   ] = useMutation<LoginData, LogInVariables>(LOG_IN, {
     onCompleted: (result) => {
-      if (result?.logIn) {
+      if (result?.logIn && result.logIn.token) {
         setViewer(result.logIn);
+        sessionStorage.setItem("token", result.logIn.token);
         displaySuccessNotification("You've successfully logged in ");
       }
     },
