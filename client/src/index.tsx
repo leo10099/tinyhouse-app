@@ -105,7 +105,11 @@ const App = () => {
           <Route exact path="/host" component={Host}></Route>
           <Route exact path="/listing/:id" component={Listing}></Route>
           <Route exact path="/listings/:location?" component={Listings}></Route>
-          <Route exact path="/user/:id" component={User}></Route>
+          <Route
+            exact
+            path="/user/:id"
+            render={(props) => <User {...props} viewer={viewer}></User>}
+          ></Route>
           <Route component={NotFound}></Route>
         </Switch>
       </Layout>
