@@ -31,7 +31,7 @@
             "deprecationReason": null
           },
           {
-            "name": "listings",
+            "name": "listing",
             "description": null,
             "args": [],
             "type": {
@@ -283,7 +283,7 @@
             "deprecationReason": null
           },
           {
-            "name": "addres",
+            "name": "address",
             "description": null,
             "args": [],
             "type": {
