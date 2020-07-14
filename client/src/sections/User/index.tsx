@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { UserProfile } from "./components";
+import { UserProfile, UserBookings, UserListings } from "./components";
 import { ErrorBanner, PageSkeleton } from "../../lib/components";
 import { useQuery } from "@apollo/react-hooks";
 import { USER } from "../../lib/graphql/queries";

@@ -38,7 +38,7 @@ export const MenuItems: React.FC<Props> = ({ setViewer, viewer }) => {
     viewer.id && viewer.avatar ? (
       <Menu.SubMenu title={<Avatar src={viewer.avatar}></Avatar>}>
         <Menu.Item key="/user">
-          <Link to="/user">
+          <Link to={`/user/${viewer.id}`}>
             <UserOutlined />
             Profile
           </Link>
