@@ -1,13 +1,50 @@
 import { IResolvers } from "apollo-server-express";
 import { Database, Listing, User } from "../../../lib/types";
-import { ListingArgs } from "./types";
+import { ListingArgs, ListingsFilter } from "./types";
 import { ObjectId } from "mongodb";
 import { authorize } from "../../../lib/utils";
 import { Request } from "express";
-import { ListingBookingsArgs, ListingBookingsData } from "./types";
+import {
+  ListingBookingsArgs,
+  ListingBookingsData,
+  ListingsArgs,
+  ListingsData,
+} from "./types";
 
 export const listingResolvers: IResolvers = {
   Query: {
+    listings: async (
+      _root: undefined,
+      { filter, limit, page }: ListingsArgs,
+      { db }: { db: Database }
+    ): Promise<ListingsData> => {
+      try {
+        const data: ListingsData = {
+          total: 0,
+          result: [],
+        };
+
+        let cursor = await db.listings.find();
+
+        if (filter && filter === ListingsFilter.PRICE_LOW_TO_HIGH) {
+          cursor = cursor.sort({ price: 1 });
+        }
+
+        if (filter && filter === ListingsFilter.PRICE_HIGH_TO_LOW) {
+          cursor = cursor.sort({ price: -1 });
+        }
+
+        cursor.skip(page > 0 ? (page - 1) * limit : 0);
+        cursor.limit(limit);
+
+        data.total = await cursor.count();
+        data.result = await cursor.toArray();
+
+        return data;
+      } catch (error) {
+        throw new Error(`Failed to query  listings: ${error}`);
+      }
+    },
     listing: async (
       _root: undefined,
       { id }: ListingArgs,
