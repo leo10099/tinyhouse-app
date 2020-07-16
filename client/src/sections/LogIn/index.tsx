@@ -13,7 +13,7 @@ import { LOG_IN } from "../../lib/graphql/mutations";
 import { ErrorBanner } from "../../lib/components";
 import {
   displaySuccessNotification,
-  displayErrorMesage,
+  displayErrorMessage,
 } from "../../lib/utils";
 import { Redirect } from "react-router-dom";
 
@@ -59,7 +59,7 @@ export const LogIn: React.FC<Props> = ({ setViewer }: Props) => {
       });
       window.location.href = data.authUrl;
     } catch {
-      displayErrorMesage(
+      displayErrorMessage(
         "Sorry! We weren't able to log you in. Please try again later."
       );
     }

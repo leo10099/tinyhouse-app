@@ -8,7 +8,7 @@ import { HomeOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
 import { Viewer } from "../../../../lib/types";
 import {
   displaySuccessNotification,
-  displayErrorMesage,
+  displayErrorMessage,
 } from "../../../../lib/utils";
 
 interface Props {
@@ -26,7 +26,7 @@ export const MenuItems: React.FC<Props> = ({ setViewer, viewer }) => {
       }
     },
     onError: (_error) => {
-      displayErrorMesage(
+      displayErrorMessage(
         "Sorry! We weren't able to log you out. Please try again"
       );
     },

@@ -22,6 +22,6 @@ export const displaySuccessNotification = (
   });
 };
 
-export const displayErrorMesage = (error: string) => {
+export const displayErrorMessage = (error: string) => {
   return message.error(error);
 };
