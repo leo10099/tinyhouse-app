@@ -34,6 +34,7 @@ export const Listings = () => {
   const { loading, data, error } = useQuery<ListingsData, ListingsVariables>(
     LISTINGS,
     {
+      // Avoid unnecesary request when the location changes and the page is not 1
       skip: locationRef.current !== location && page !== 1,
       variables: {
         location: location,
@@ -47,6 +48,8 @@ export const Listings = () => {
   // useScrollToTop();
 
   useEffect(() => {
+    /* Go to first page if a new search is made when searching 
+    on a paginated listing and the current viewed page is greater than 1 */
     setPage(1);
     locationRef.current = location;
   }, [location]);
@@ -54,7 +57,9 @@ export const Listings = () => {
   if (loading) {
     return (
       <Content className="listings">
-        <ListingsSkeleton />
+        <div className="listings">
+          <ListingsSkeleton />
+        </div>
       </Content>
     );
   }
