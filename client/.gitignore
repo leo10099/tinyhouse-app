@@ -24,3 +24,5 @@ yarn-error.log*
 
 # generated
 __generated__
+
+.env

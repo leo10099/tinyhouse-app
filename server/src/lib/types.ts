@@ -4,7 +4,7 @@ export interface Viewer {
   _id?: string;
   token?: string;
   avatar?: string;
-  walletId?: string;
+  walletId?: string | null;
   didRequestGoogleInfo: boolean;
 }
 
@@ -56,7 +56,7 @@ export interface User {
   name: string;
   avatar: string;
   contact: string;
-  walletId?: string;
+  walletId?: string | null;
   income: number;
   bookings: ObjectId[];
   listings: ObjectId[];

@@ -11,10 +11,12 @@ import { RouteComponentProps } from "react-router-dom";
 
 import { Col, Layout, Row } from "antd";
 import { Viewer } from "../../lib/types";
+
 const { Content } = Layout;
 const PAGE_LIMIT = 4;
 interface Props {
   viewer: Viewer;
+  setViewer: (viewer: Viewer) => void;
 }
 interface MatchParams {
   id: string;
@@ -23,26 +25,37 @@ interface MatchParams {
 export const User = ({
   viewer,
   match,
+  setViewer,
 }: Props & RouteComponentProps<MatchParams>) => {
   const [listingsPage, setListingsPage] = useState(1);
   const [bookingsPage, setBookingsPage] = useState(1);
 
-  const { data, loading, error } = useQuery<UserData, UserVariables>(USER, {
-    variables: {
-      id: match.params.id,
-      bookingsPage,
-      listingsPage,
-      limit: PAGE_LIMIT,
-    },
-  });
+  const { data, loading, error, refetch } = useQuery<UserData, UserVariables>(
+    USER,
+    {
+      variables: {
+        id: match.params.id,
+        bookingsPage,
+        listingsPage,
+        limit: PAGE_LIMIT,
+      },
+    }
+  );
 
   const user = data?.user;
   const viewerIsUser = viewer.id === match.params.id;
   const userListings = user ? user.listings : null;
   const userBookings = user ? user.bookings : null;
 
+  const handleUserRefetch = async () => await refetch();
+
   const userProfileElement = user ? (
-    <UserProfile viewerIsUser={viewerIsUser} user={user} />
+    <UserProfile
+      viewer={viewer}
+      user={user}
+      setViewer={setViewer}
+      handleUserRefetch={handleUserRefetch}
+    />
   ) : null;
 
   const userListingsElement = userListings ? (
@@ -77,8 +90,16 @@ export const User = ({
     );
   }
 
+  const stripeError = new URL(window.location.href).searchParams.get(
+    "stripe_error"
+  );
+  const stripeErrorBanner = stripeError ? (
+    <ErrorBanner description="We had an issue connecting with Stripe. Please try again later"></ErrorBanner>
+  ) : null;
+
   return (
     <Content className="user">
+      {stripeErrorBanner}
       <Row gutter={12} justify="space-between">
         <Col xs={24}>{userProfileElement}</Col>
         <Col xs={24}>{userListingsElement}</Col>

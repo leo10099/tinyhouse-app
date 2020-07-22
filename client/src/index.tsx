@@ -24,6 +24,7 @@ import {
   Listing,
   Listings,
   LogIn,
+  Stripe,
   NotFound,
   User,
 } from "./sections";
@@ -102,13 +103,22 @@ const App = () => {
             path="/login"
             render={(props) => <LogIn {...props} setViewer={setViewer} />}
           ></Route>
+          <Route
+            exact
+            path="/stripe"
+            render={(props) => (
+              <Stripe {...props} viewer={viewer} setViewer={setViewer}></Stripe>
+            )}
+          ></Route>
           <Route exact path="/host" component={Host}></Route>
           <Route exact path="/listing/:id" component={Listing}></Route>
           <Route exact path="/listings/:location?" component={Listings}></Route>
           <Route
             exact
             path="/user/:id"
-            render={(props) => <User {...props} viewer={viewer}></User>}
+            render={(props) => (
+              <User {...props} setViewer={setViewer} viewer={viewer}></User>
+            )}
           ></Route>
           <Route component={NotFound}></Route>
         </Switch>
