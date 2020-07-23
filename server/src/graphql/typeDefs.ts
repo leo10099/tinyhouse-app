@@ -24,6 +24,14 @@ export const typeDefs = gql`
     PRICE_HIGH_TO_LOW
   }
 
+
+  input CreateBookingInput {
+    id: ID!
+    source: String!
+    checkIn: String!
+    checkOut: String!
+  }
+
   type Listing {
     id: ID!
     title: String!
@@ -102,5 +110,6 @@ export const typeDefs = gql`
     connectStripe(input: ConnectStripeInput): Viewer!
     disconnectStripe: Viewer!
     hostListing(input: HostListingInput!): Listing!
+    createBookings(input: CreateBookingInput!): Booking!
   }
 `;
