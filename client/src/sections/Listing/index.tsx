@@ -14,15 +14,23 @@ import {
   ListingBookings,
   ListingDetails,
 } from "./components";
+import { Viewer } from "../../lib/types";
 
 interface MatchParams {
   id: string;
 }
 
+interface Props {
+  viewer: Viewer;
+}
+
 const { Content } = Layout;
 const PAGE_LIMIT = 3;
 
-export const Listing = ({ match }: RouteComponentProps<MatchParams>) => {
+export const Listing = ({
+  match,
+  viewer,
+}: RouteComponentProps<MatchParams> & Props) => {
   const [bookingsPage, setBookingsPage] = useState(1);
   const [checkInDate, setCheckInDate] = useState<Moment | null>(null);
   const [checkOutDate, setCheckOutDate] = useState<Moment | null>(null);
@@ -73,6 +81,8 @@ export const Listing = ({ match }: RouteComponentProps<MatchParams>) => {
 
   const listingCreateBookingElement = listing ? (
     <ListingCreateBooking
+      host={listing.host}
+      viewer={viewer}
       price={listing.price}
       checkInDate={checkInDate}
       checkOutDate={checkOutDate}
