@@ -110,7 +110,11 @@ const App = () => {
               <Stripe {...props} viewer={viewer} setViewer={setViewer}></Stripe>
             )}
           ></Route>
-          <Route exact path="/host" component={Host}></Route>
+          <Route
+            exact
+            path="/host"
+            render={(props) => <Host {...props} viewer={viewer}></Host>}
+          ></Route>
           <Route exact path="/listing/:id" component={Listing}></Route>
           <Route exact path="/listings/:location?" component={Listings}></Route>
           <Route

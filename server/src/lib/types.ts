@@ -47,7 +47,7 @@ export interface Listing {
   numOfGuests: number;
   bookings: ObjectId[];
   bookingsIndex: BookingsIndex;
-  authorized: boolean;
+  authorized?: boolean;
 }
 
 export interface User {

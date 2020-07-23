@@ -1,6 +1,7 @@
 require("dotenv").config();
 import express, { Application } from "express";
 import cookieParser from "cookie-parser";
+import bodyParser from "body-parser";
 import { ApolloServer } from "apollo-server-express";
 import { connectDatabase } from "./database";
 import { typeDefs, resolvers } from "./graphql";
@@ -8,6 +9,7 @@ import { typeDefs, resolvers } from "./graphql";
 const PORT = process.env.PORT || 9000;
 
 const mount = async (app: Application) => {
+  app.use(bodyParser.json({ limit: "2mb" }));
   app.use(cookieParser(process.env.COOKIE_SECRET));
 
   const server = new ApolloServer({
