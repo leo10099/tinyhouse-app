@@ -1,6 +1,11 @@
 import { gql } from "apollo-server-express";
 
 export const typeDefs = gql`
+  enum ListingsFilter {
+    PRICE_LOW_TO_HIGH
+    PRICE_HIGH_TO_LOW
+  }
+
   type Booking {
     id: ID!
     listing: Listing!
@@ -17,19 +22,6 @@ export const typeDefs = gql`
   enum ListingType {
     APARTMENT
     HOUSE
-  }
-
-  enum ListingsFilter {
-    PRICE_LOW_TO_HIGH
-    PRICE_HIGH_TO_LOW
-  }
-
-
-  input CreateBookingInput {
-    id: ID!
-    source: String!
-    checkIn: String!
-    checkOut: String!
   }
 
   type Listing {
@@ -55,14 +47,6 @@ export const typeDefs = gql`
     result: [Listing!]!
   }
 
-  type Viewer {
-    id: ID
-    token: String
-    avatar: String
-    hasWallet: Boolean
-    didRequestGoogleInfo: Boolean!
-  }
-
   type User {
     id: ID!
     name: String!
@@ -72,6 +56,14 @@ export const typeDefs = gql`
     income: Int
     bookings(limit: Int!, page: Int!): Bookings
     listings(limit: Int!, page: Int!): Listings!
+  }
+
+  type Viewer {
+    id: ID
+    token: String
+    avatar: String
+    hasWallet: Boolean
+    didRequestGoogleInfo: Boolean!
   }
 
   input LogInInput {
@@ -92,6 +84,13 @@ export const typeDefs = gql`
     numOfGuests: Int!
   }
 
+  input CreateBookingInput {
+    id: ID!
+    source: String!
+    checkIn: String!
+    checkOut: String!
+  }
+
   type Query {
     authUrl: String!
     user(id: ID!): User!
@@ -107,9 +106,9 @@ export const typeDefs = gql`
   type Mutation {
     logIn(input: LogInInput): Viewer!
     logOut: Viewer!
-    connectStripe(input: ConnectStripeInput): Viewer!
+    connectStripe(input: ConnectStripeInput!): Viewer!
     disconnectStripe: Viewer!
     hostListing(input: HostListingInput!): Listing!
-    createBookings(input: CreateBookingInput!): Booking!
+    createBooking(input: CreateBookingInput!): Booking!
   }
 `;

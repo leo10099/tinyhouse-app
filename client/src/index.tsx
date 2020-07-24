@@ -12,6 +12,7 @@ import {
 } from "./lib/graphql/mutations/LogIn/__generated__/LogIn";
 import { Viewer } from "./lib/types";
 import { AppHeaderSkeleton, ErrorBanner } from "./lib/components";
+import { StripeProvider, Elements } from "react-stripe-elements";
 
 // Styles
 import "./styles/index.css";
@@ -90,44 +91,62 @@ const App = () => {
   );
 
   return (
-    <Router>
-      <Layout id="app">
-        {logInErrorBannerElement}
-        <Affix offsetTop={0} className="app__affix-header">
-          <AppHeader viewer={viewer} setViewer={setViewer} />
-        </Affix>
-        <Switch>
-          <Route exact path="/" component={Home}></Route>
-          <Route
-            exact
-            path="/login"
-            render={(props) => <LogIn {...props} setViewer={setViewer} />}
-          ></Route>
-          <Route
-            exact
-            path="/stripe"
-            render={(props) => (
-              <Stripe {...props} viewer={viewer} setViewer={setViewer}></Stripe>
-            )}
-          ></Route>
-          <Route
-            exact
-            path="/host"
-            render={(props) => <Host {...props} viewer={viewer}></Host>}
-          ></Route>
-          <Route exact path="/listing/:id" component={Listing}></Route>
-          <Route exact path="/listings/:location?" component={Listings}></Route>
-          <Route
-            exact
-            path="/user/:id"
-            render={(props) => (
-              <User {...props} setViewer={setViewer} viewer={viewer}></User>
-            )}
-          ></Route>
-          <Route component={NotFound}></Route>
-        </Switch>
-      </Layout>
-    </Router>
+    <StripeProvider apiKey={process.env.REACT_APP_S_PUBLISHABLE_KEY as string}>
+      <Router>
+        <Layout id="app">
+          {logInErrorBannerElement}
+          <Affix offsetTop={0} className="app__affix-header">
+            <AppHeader viewer={viewer} setViewer={setViewer} />
+          </Affix>
+          <Switch>
+            <Route exact path="/" component={Home}></Route>
+            <Route
+              exact
+              path="/login"
+              render={(props) => <LogIn {...props} setViewer={setViewer} />}
+            ></Route>
+            <Route
+              exact
+              path="/stripe"
+              render={(props) => (
+                <Stripe
+                  {...props}
+                  viewer={viewer}
+                  setViewer={setViewer}
+                ></Stripe>
+              )}
+            ></Route>
+            <Route
+              exact
+              path="/host"
+              render={(props) => <Host {...props} viewer={viewer}></Host>}
+            ></Route>
+            <Route
+              exact
+              path="/listing/:id"
+              render={(props) => (
+                <Elements>
+                  <Listing {...props} viewer={viewer} />
+                </Elements>
+              )}
+            />
+            <Route
+              exact
+              path="/listings/:location?"
+              component={Listings}
+            ></Route>
+            <Route
+              exact
+              path="/user/:id"
+              render={(props) => (
+                <User {...props} setViewer={setViewer} viewer={viewer}></User>
+              )}
+            ></Route>
+            <Route component={NotFound}></Route>
+          </Switch>
+        </Layout>
+      </Router>
+    </StripeProvider>
   );
 };
 

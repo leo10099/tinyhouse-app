@@ -12,6 +12,7 @@ import {
 import {
   ListingCreateBooking,
   ListingBookings,
+  WrappedListingCreateBookingModal as ListingCreateBookingModal,
   ListingDetails,
 } from "./components";
 import { Viewer } from "../../lib/types";
@@ -34,17 +35,28 @@ export const Listing = ({
   const [bookingsPage, setBookingsPage] = useState(1);
   const [checkInDate, setCheckInDate] = useState<Moment | null>(null);
   const [checkOutDate, setCheckOutDate] = useState<Moment | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const { loading, data, error } = useQuery<ListingData, ListingVariables>(
-    LISTING,
-    {
-      variables: {
-        id: match.params.id,
-        bookingsPage,
-        limit: PAGE_LIMIT,
-      },
-    }
-  );
+  const { loading, data, error, refetch } = useQuery<
+    ListingData,
+    ListingVariables
+  >(LISTING, {
+    variables: {
+      id: match.params.id,
+      bookingsPage,
+      limit: PAGE_LIMIT,
+    },
+  });
+
+  const clearBookingData = () => {
+    setModalVisible(false);
+    setCheckInDate(null);
+    setCheckOutDate(null);
+  };
+
+  const handleListingRefetch = async () => {
+    await refetch();
+  };
 
   if (loading) {
     return (
@@ -81,15 +93,30 @@ export const Listing = ({
 
   const listingCreateBookingElement = listing ? (
     <ListingCreateBooking
-      host={listing.host}
-      viewer={viewer}
-      price={listing.price}
+      bookingsIndex={listing.bookingsIndex}
       checkInDate={checkInDate}
       checkOutDate={checkOutDate}
+      host={listing.host}
+      price={listing.price}
       setCheckInDate={setCheckInDate}
       setCheckOutDate={setCheckOutDate}
+      viewer={viewer}
     />
   ) : null;
+
+  const listingCreateBookingModalElement =
+    listing && checkInDate && checkOutDate ? (
+      <ListingCreateBookingModal
+        id={listing.id}
+        price={listing.price}
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        checkInDate={checkInDate}
+        checkOutDate={checkOutDate}
+        clearBookingData={clearBookingData}
+        handleListingRefetch={handleListingRefetch}
+      />
+    ) : null;
 
   return (
     <Content className="listings">
@@ -102,6 +129,7 @@ export const Listing = ({
           {listingCreateBookingElement}
         </Col>
       </Row>
+      {listingCreateBookingModalElement}
     </Content>
   );
 };
