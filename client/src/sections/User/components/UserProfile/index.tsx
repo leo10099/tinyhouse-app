@@ -16,6 +16,7 @@ interface Props {
   handleUserRefetch: () => void;
   viewer: Viewer;
   setViewer: (viewer: Viewer) => void;
+  viewerIsUser: boolean;
 }
 
 const { Paragraph, Text, Title } = Typography;
@@ -29,6 +30,7 @@ export const UserProfile = ({
   handleUserRefetch,
   viewer,
   setViewer,
+  viewerIsUser,
 }: Props) => {
   const [disconnectStripe, { loading }] = useMutation<DisconnectStripeData>(
     DISCONNECT_STRIPE,
@@ -106,7 +108,7 @@ export const UserProfile = ({
     </Fragment>
   );
 
-  const additionalDetailsSection = true ? (
+  const additionalDetailsSection = viewerIsUser ? (
     <Fragment>
       <Divider />
       <div className="user-profile__details">

@@ -51,6 +51,7 @@ export const User = ({
 
   const userProfileElement = user ? (
     <UserProfile
+      viewerIsUser={viewerIsUser}
       viewer={viewer}
       user={user}
       setViewer={setViewer}
